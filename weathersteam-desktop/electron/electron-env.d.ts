@@ -18,6 +18,10 @@ declare namespace NodeJS {
     APP_ROOT: string;
     /** /dist/ or /public/ */
     VITE_PUBLIC: string;
+
+    VITE_SIGN_IN_PORT: string;
+    VITE_SIGN_IN_HOST: string;
+    VITE_SIGN_IN_TIMEOUT: string;
   }
 }
 

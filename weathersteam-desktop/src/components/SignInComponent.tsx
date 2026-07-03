@@ -1,24 +1,72 @@
 import { CheckCircle } from "@mui/icons-material";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  AlertColor,
+  AlertPropsColorOverrides,
+  Box,
+  Button,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
+import { SteamAuthResponse } from "../../common/types";
+import { OverridableStringUnion } from "@mui/types";
+import CustomSnackbar from "./CustomSnackbar";
 
 export default function SignInComponent() {
   const [loading, setLoading] = useState<boolean>(false);
   const [signInDisabled, setSignInDisabled] = useState<boolean>(false);
   const [signInComplete, setSignInComplete] = useState<boolean>(false);
+  const [snackbarShow, setSnackbarShow] = useState<boolean>(false);
+
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState<
+    OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined
+  >(undefined);
 
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleSnackBarClose = () => {
+    setSnackbarShow(false);
+    setSnackbarMessage("");
+    setSnackbarAlertSeverity(undefined);
+  };
+
+  const handleSteamSignIn = async (): Promise<SteamAuthResponse> => {
+    const result = await window.weatherSteamApi.steamSignIn();
+
+    if (result.success && result.steamId) {
+      return { success: true, steamId: result.steamId };
+    } else {
+      return { success: false, error: result.error || "Something went wrong" };
+    }
+  };
 
   const onSignInClick = async () => {
     setLoading(true);
     setLoadingMessage("Routing to auth page...");
 
-    await sleep(1000); // placeholder timeouts
-    
+    const signInResponse: SteamAuthResponse = await handleSteamSignIn();
+
+    console.log(signInResponse.error);
+
+    if (
+      !signInResponse.success &&
+      signInResponse.error?.includes("cancelled")
+    ) {
+      return;
+    }
+
+    if (!signInResponse.success) {
+      setSnackbarMessage(signInResponse.error || "Something went wrong.");
+      setSnackbarAlertSeverity("error");
+      setSnackbarShow(true);
+      setLoading(false);
+      return;
+    }
+
     setLoadingMessage("Checking your profile...");
-    
+
     await sleep(1000);
 
     setLoadingMessage("Fetching profile data...");
@@ -28,6 +76,14 @@ export default function SignInComponent() {
     setLoading(false);
     setSignInComplete(true);
     setSignInDisabled(true);
+  };
+
+  const onCancelSignIn = async () => {
+    await window.weatherSteamApi.cancelSignIn();
+    setSnackbarMessage("Sign in cancelled by user.");
+    setSnackbarAlertSeverity("info");
+    setSnackbarShow(true);
+    setLoading(false);
   };
 
   const renderSignInButton = () => {
@@ -81,7 +137,13 @@ export default function SignInComponent() {
   };
 
   return (
-    <Box sx={{margin: 2, gap: 2}}>
+    <Box sx={{ margin: 2, gap: 2, display: "flex", flexDirection: "column" }}>
+      <CustomSnackbar
+        show={snackbarShow}
+        message={snackbarMessage}
+        severity={snackbarAlertSeverity}
+        handleClose={handleSnackBarClose}
+      />
       <Button
         variant="contained"
         disableRipple
@@ -105,6 +167,24 @@ export default function SignInComponent() {
       >
         {renderSignInButton()}
       </Button>
+      {loading ? (
+        <Button
+          variant="contained"
+          disableRipple
+          color="error"
+          onClick={onCancelSignIn}
+          sx={{
+            transition: "transform 0.1s ease-in-out",
+            "&:active": {
+              transform: "scale(0.95)",
+            },
+          }}
+        >
+          Cancel
+        </Button>
+      ) : (
+        ""
+      )}
     </Box>
   );
 }
