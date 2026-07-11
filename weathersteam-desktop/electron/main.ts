@@ -5,6 +5,7 @@ import { IpcChannel } from "../common/ipcChannels";
 import * as dotenv from "dotenv";
 import steamSignIn from "./function/steamSignIn";
 import getSteamProfile from "./function/getSteamProfile";
+import getUserLibrary from "./function/getUserLibrary";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -65,6 +66,9 @@ app.whenReady().then(() => {
   ipcMain.handle(
     IpcChannel.GET_STEAM_PROFILE,
     async (_event, steamId: string) => getSteamProfile(steamId),
+  );
+  ipcMain.handle(IpcChannel.GET_USER_LIBRARY, async (_event, steamId: string) =>
+    getUserLibrary(steamId),
   );
   createWindow();
 });

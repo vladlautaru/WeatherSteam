@@ -24,8 +24,39 @@ export interface SteamProfile {
   loccountrycode?: string;
 }
 
+export interface SteamUserLibraryResponse {
+  success: boolean;
+  library?: SteamUserLibrary;
+  error?: string;
+}
+
+export interface SteamUserLibrary {
+  game_count: number;
+  games: SteamGame[];
+}
+
+export interface SteamGame {
+  appid: number;
+  name: string;
+  playtime_forever: number;
+  img_icon_url: string;
+  has_community_visible_stats: boolean;
+  playtime_windows_forever: number;
+  playtime_mac_forever: number;
+  playtime_linux_forever: number;
+  playtime_deck_forever: number;
+  rtime_last_played: Date;
+  capsule_filename: string;
+  has_workshop: boolean;
+  has_market: boolean;
+  has_dlc: boolean;
+  content_descriptorids: number[];
+  playtime_disconnected: number;
+}
+
 export interface WeatherSteamAPI {
   steamSignIn: () => Promise<SteamAuthResponse>;
   getSteamProfile: (steamId: string) => Promise<SteamProfileResponse>;
+  getUserLibrary: (steamId: string) => Promise<SteamUserLibraryResponse>;
   cancelSignIn: () => Promise<void>;
 }

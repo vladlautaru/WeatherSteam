@@ -12,7 +12,7 @@ export default async function getSteamProfile(
     const response: SteamProfile | undefined = await fetch(requestUrl)
       .then((response) => response.json())
       .then((data) => data.response?.players?.[0] as SteamProfile)
-      .catch((e) => {
+      .catch((_e) => {
         return undefined;
       });
 

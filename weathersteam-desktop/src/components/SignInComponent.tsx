@@ -11,6 +11,8 @@ import {
   SteamAuthResponse,
   SteamProfile,
   SteamProfileResponse,
+  SteamUserLibrary,
+  SteamUserLibraryResponse,
 } from "../../common/types";
 import { OverridableStringUnion } from "@mui/types";
 import CustomSnackbar from "./CustomSnackbar";
@@ -26,9 +28,6 @@ export default function SignInComponent() {
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState<
     OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined
   >(undefined);
-
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleSnackBarClose = () => {
     setSnackbarShow(false);
@@ -58,6 +57,18 @@ export default function SignInComponent() {
     }
   };
 
+  const handleGetUserLibrary = async (
+    steamId: string,
+  ): Promise<SteamUserLibraryResponse> => {
+    const result = await window.weatherSteamApi.getUserLibrary(steamId);
+
+    if (result.success && result.library) {
+      return { success: true, library: result.library };
+    } else {
+      return { success: false, error: result.error || "Something went wrong" };
+    }
+  };
+
   const onSignInClick = async () => {
     setLoading(true);
     setLoadingMessage("Routing to auth page...");
@@ -71,16 +82,8 @@ export default function SignInComponent() {
       return;
     }
 
-    if (!signInResponse.success) {
+    if (!signInResponse.success || signInResponse.steamId === undefined) {
       setSnackbarMessage(signInResponse.error || "Something went wrong.");
-      setSnackbarAlertSeverity("error");
-      setSnackbarShow(true);
-      setLoading(false);
-      return;
-    }
-
-    if (signInResponse.steamId === undefined) {
-      setSnackbarMessage("Something went wrong.");
       setSnackbarAlertSeverity("error");
       setSnackbarShow(true);
       setLoading(false);
@@ -92,10 +95,10 @@ export default function SignInComponent() {
 
     setLoadingMessage("Fetching profile...");
 
-    const getProfileResponse: SteamProfileResponse =
+    const profileResponse: SteamProfileResponse =
       await handleGetSteamProfile(userSteamId);
 
-    if (!getProfileResponse.success) {
+    if (!profileResponse.success || profileResponse.profile === undefined) {
       setSnackbarMessage(signInResponse.error || "Something went wrong.");
       setSnackbarAlertSeverity("error");
       setSnackbarShow(true);
@@ -103,20 +106,27 @@ export default function SignInComponent() {
       return;
     }
 
-    if (getProfileResponse.profile === undefined) {
-      setSnackbarMessage("Something went wrong.");
+    const userProfile: SteamProfile = profileResponse.profile;
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+    setLoadingMessage("Fetching library...");
+
+    const userLibraryResponse: SteamUserLibraryResponse =
+      await handleGetUserLibrary(userSteamId);
+
+    if (
+      !userLibraryResponse.success ||
+      userLibraryResponse.library === undefined
+    ) {
+      setSnackbarMessage(signInResponse.error || "Something went wrong.");
       setSnackbarAlertSeverity("error");
       setSnackbarShow(true);
       setLoading(false);
       return;
     }
 
-    const userProfile: SteamProfile = getProfileResponse.profile;
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-    setLoadingMessage("Fetching library...");
-
-    await sleep(1000);
+    const userLibrary: SteamUserLibrary = userLibraryResponse.library;
+    localStorage.setItem("userLibrary", JSON.stringify(userLibrary));
 
     setLoading(false);
     setSignInComplete(true);
