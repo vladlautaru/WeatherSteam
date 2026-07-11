@@ -7,7 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { SteamAuthResponse } from "../../common/types";
+import {
+  SteamAuthResponse,
+  SteamProfile,
+  SteamProfileResponse,
+} from "../../common/types";
 import { OverridableStringUnion } from "@mui/types";
 import CustomSnackbar from "./CustomSnackbar";
 
@@ -42,13 +46,23 @@ export default function SignInComponent() {
     }
   };
 
+  const handleGetSteamProfile = async (
+    steamId: string,
+  ): Promise<SteamProfileResponse> => {
+    const result = await window.weatherSteamApi.getSteamProfile(steamId);
+
+    if (result.success && result.profile) {
+      return { success: true, profile: result.profile };
+    } else {
+      return { success: false, error: result.error || "Something went wrong" };
+    }
+  };
+
   const onSignInClick = async () => {
     setLoading(true);
     setLoadingMessage("Routing to auth page...");
 
     const signInResponse: SteamAuthResponse = await handleSteamSignIn();
-
-    console.log(signInResponse.error);
 
     if (
       !signInResponse.success &&
@@ -65,11 +79,42 @@ export default function SignInComponent() {
       return;
     }
 
-    setLoadingMessage("Checking your profile...");
+    if (signInResponse.steamId === undefined) {
+      setSnackbarMessage("Something went wrong.");
+      setSnackbarAlertSeverity("error");
+      setSnackbarShow(true);
+      setLoading(false);
+      return;
+    }
 
-    await sleep(1000);
+    const userSteamId: string = signInResponse.steamId;
+    localStorage.setItem("userSteamId", userSteamId);
 
-    setLoadingMessage("Fetching profile data...");
+    setLoadingMessage("Fetching profile...");
+
+    const getProfileResponse: SteamProfileResponse =
+      await handleGetSteamProfile(userSteamId);
+
+    if (!getProfileResponse.success) {
+      setSnackbarMessage(signInResponse.error || "Something went wrong.");
+      setSnackbarAlertSeverity("error");
+      setSnackbarShow(true);
+      setLoading(false);
+      return;
+    }
+
+    if (getProfileResponse.profile === undefined) {
+      setSnackbarMessage("Something went wrong.");
+      setSnackbarAlertSeverity("error");
+      setSnackbarShow(true);
+      setLoading(false);
+      return;
+    }
+
+    const userProfile: SteamProfile = getProfileResponse.profile;
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+    setLoadingMessage("Fetching library...");
 
     await sleep(1000);
 

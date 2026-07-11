@@ -4,10 +4,11 @@ import path from "node:path";
 import { IpcChannel } from "../common/ipcChannels";
 import * as dotenv from "dotenv";
 import steamSignIn from "./function/steamSignIn";
+import getSteamProfile from "./function/getSteamProfile";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
@@ -61,5 +62,9 @@ app.on("activate", () => {
 
 app.whenReady().then(() => {
   ipcMain.handle(IpcChannel.STEAM_SIGN_IN, () => steamSignIn(win));
+  ipcMain.handle(
+    IpcChannel.GET_STEAM_PROFILE,
+    async (_event, steamId: string) => getSteamProfile(steamId),
+  );
   createWindow();
 });

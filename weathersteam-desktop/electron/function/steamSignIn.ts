@@ -2,12 +2,7 @@ import { BrowserWindow, ipcMain, shell } from "electron";
 import http from "node:http";
 import { IpcChannel } from "../../common/ipcChannels";
 import { SteamAuthResponse } from "../../common/types";
-
-function requireEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) throw new Error(`Missing required env variable: ${key}`);
-  return value;
-}
+import requireEnv from "./requireEnv";
 
 function restoreMainWindow(mainWindow: BrowserWindow | null): void {
   if (!mainWindow) return;
