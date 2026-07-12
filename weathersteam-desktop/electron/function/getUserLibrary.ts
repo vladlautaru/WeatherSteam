@@ -9,25 +9,25 @@ export default async function getUserLibrary(
   const requestUrl: string = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${steamApiKey}&steamid=${steamId}&include_appinfo=true&include_extended_appinfo=true`;
 
   try {
-      const response: SteamUserLibrary | undefined = await fetch(requestUrl)
-        .then((response) => response.json())
-        .then((data) => data.response as SteamUserLibrary)
-        .catch((_e) => {
-          return undefined;
-        });
-  
-      if (response === undefined) {
-        return {
-          success: false,
-          error: "Couldn't fetch library.",
-        };
-      }
-  
-      return { success: true, library: response };
-    } catch (e) {
+    const response: SteamUserLibrary | undefined = await fetch(requestUrl)
+      .then((response) => response.json())
+      .then((data) => data.response as SteamUserLibrary)
+      .catch((_e) => {
+        return undefined;
+      });
+
+    if (response === undefined) {
       return {
         success: false,
-        error: "Something went wrong.",
+        error: "Couldn't fetch library.",
       };
     }
+
+    return { success: true, library: response };
+  } catch (e) {
+    return {
+      success: false,
+      error: "Something went wrong.",
+    };
+  }
 }

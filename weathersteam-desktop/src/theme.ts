@@ -38,5 +38,5 @@ export const weatherSteamTheme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-  }
+  },
 });

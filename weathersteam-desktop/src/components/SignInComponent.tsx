@@ -16,8 +16,11 @@ import {
 } from "../../common/types";
 import { OverridableStringUnion } from "@mui/types";
 import CustomSnackbar from "./CustomSnackbar";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInComponent() {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [signInDisabled, setSignInDisabled] = useState<boolean>(false);
   const [signInComplete, setSignInComplete] = useState<boolean>(false);
@@ -131,6 +134,8 @@ export default function SignInComponent() {
     setLoading(false);
     setSignInComplete(true);
     setSignInDisabled(true);
+
+    navigate("/library");
   };
 
   const onCancelSignIn = async () => {
