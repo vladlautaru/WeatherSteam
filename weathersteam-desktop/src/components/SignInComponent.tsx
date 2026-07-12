@@ -135,7 +135,7 @@ export default function SignInComponent() {
     setSignInComplete(true);
     setSignInDisabled(true);
 
-    navigate("my-library");
+    navigate("/library");
   };
 
   const onCancelSignIn = async () => {

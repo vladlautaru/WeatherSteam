@@ -1,3 +1,3 @@
 export default function LibraryPage() {
-  return <></>;
+  return <>This is Library Page</>;
 }
