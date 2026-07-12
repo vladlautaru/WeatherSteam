@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import PermanentDrawer from './PermanentDrawer';
 import { useState } from 'react';
 
