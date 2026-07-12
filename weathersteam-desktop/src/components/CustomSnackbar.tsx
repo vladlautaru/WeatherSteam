@@ -11,8 +11,7 @@ interface CustomSnackbarProps {
   show: boolean;
   message: string;
   severity:
-    | OverridableStringUnion<AlertColor, AlertPropsColorOverrides>
-    | undefined;
+    OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined;
   handleClose: () => void;
 }
 

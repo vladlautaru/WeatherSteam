@@ -20,7 +20,9 @@ export default function SignInPage() {
         }}
       >
         <Typography variant="h2">WeatherSteam</Typography>
-        <Typography sx={{color: "text.secondary"}}>By gamers. For gamers</Typography>
+        <Typography sx={{ color: "text.secondary" }}>
+          By gamers. For gamers
+        </Typography>
         <SignInComponent></SignInComponent>
       </Box>
     </Box>

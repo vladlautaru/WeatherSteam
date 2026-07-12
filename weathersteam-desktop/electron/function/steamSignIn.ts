@@ -26,7 +26,7 @@ function teardownServer(): void {
 }
 
 export default function steamSignIn(
-  mainWindow: BrowserWindow | null
+  mainWindow: BrowserWindow | null,
 ): Promise<SteamAuthResponse> {
   if (pendingResolve) {
     pendingResolve({ success: false, error: "Sign in was restarted." });
@@ -59,14 +59,17 @@ export default function steamSignIn(
     authUrl.searchParams.set("openid.ns", "http://specs.openid.net/auth/2.0");
     authUrl.searchParams.set("openid.mode", "checkid_setup");
     authUrl.searchParams.set("openid.return_to", RETURN_URL);
-    authUrl.searchParams.set("openid.realm", `http://${SIGN_IN_HOST}:${SIGN_IN_PORT}`);
+    authUrl.searchParams.set(
+      "openid.realm",
+      `http://${SIGN_IN_HOST}:${SIGN_IN_PORT}`,
+    );
     authUrl.searchParams.set(
       "openid.identity",
-      "http://specs.openid.net/auth/2.0/identifier_select"
+      "http://specs.openid.net/auth/2.0/identifier_select",
     );
     authUrl.searchParams.set(
       "openid.claimed_id",
-      "http://specs.openid.net/auth/2.0/identifier_select"
+      "http://specs.openid.net/auth/2.0/identifier_select",
     );
 
     const finish = (result: SteamAuthResponse) => {
@@ -89,11 +92,13 @@ export default function steamSignIn(
         return;
       }
 
-      const urlObj = new URL(`http://${SIGN_IN_HOST}:${SIGN_IN_PORT}${req.url}`);
+      const urlObj = new URL(
+        `http://${SIGN_IN_HOST}:${SIGN_IN_PORT}${req.url}`,
+      );
 
       res.writeHead(200, { "Content-Type": "text/html" });
       res.end(
-        "<h1>Login Successful!</h1><p>You can close this tab and return to WeatherSteam.</p>"
+        "<h1>Login Successful!</h1><p>You can close this tab and return to WeatherSteam.</p>",
       );
 
       if (urlObj.searchParams.get("openid.mode") === "cancel") {
@@ -118,11 +123,14 @@ export default function steamSignIn(
           const claimedId = urlObj.searchParams.get("openid.claimed_id") ?? "";
           const steamId = claimedId.replace(
             "https://steamcommunity.com/openid/id/",
-            ""
+            "",
           );
 
           if (!steamId) {
-            finish({ success: false, error: "Steam did not return a valid ID." });
+            finish({
+              success: false,
+              error: "Steam did not return a valid ID.",
+            });
             return;
           }
 
