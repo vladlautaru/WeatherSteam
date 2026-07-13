@@ -54,9 +54,19 @@ export interface SteamGame {
   playtime_disconnected: number;
 }
 
+export interface LocationResponse {
+  status: string;
+  country?: string;
+  regionName?: string;
+  city?: string;
+  lat?: number;
+  lon?: number;
+}
+
 export interface WeatherSteamAPI {
   steamSignIn: () => Promise<SteamAuthResponse>;
   getSteamProfile: (steamId: string) => Promise<SteamProfileResponse>;
   getUserLibrary: (steamId: string) => Promise<SteamUserLibraryResponse>;
+  getCurrentLocation: () => Promise<LocationResponse>;
   cancelSignIn: () => Promise<void>;
 }
