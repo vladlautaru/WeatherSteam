@@ -1,12 +1,12 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
-import BlankLayout from "../layouts/BlankLayout";
-import MainLayout from "../layouts/MainLayout";
-import LibraryPage from "../pages/LibraryPage";
-import ProfilePage from "../pages/ProfilePage";
-import RandomChoicePage from "../pages/RandomChoicePage";
-import SettingsPage from "../pages/SettingsPage";
-import SignInPage from "../pages/SignInPage";
-import WeatherChoicePage from "../pages/WeatherChoicePage";
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import BlankLayout from '../layouts/BlankLayout';
+import MainLayout from '../layouts/MainLayout';
+import LibraryPage from '../pages/LibraryPage';
+import ProfilePage from '../pages/ProfilePage';
+import RandomChoicePage from '../pages/RandomChoicePage';
+import SettingsPage from '../pages/SettingsPage';
+import SignInPage from '../pages/SignInPage';
+import WeatherChoicePage from '../pages/WeatherChoicePage';
 
 export default function WeatherSteamRoutes() {
   return (

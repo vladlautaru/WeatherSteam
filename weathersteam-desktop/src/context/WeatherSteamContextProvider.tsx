@@ -2,6 +2,7 @@ import {
   createContext,
   Dispatch,
   useContext,
+  useEffect,
   useMemo,
   useReducer
 } from 'react';
@@ -28,6 +29,15 @@ const initialState: State = {
     games: []
   }
 };
+
+function readLS<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw !== null ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export const ActionTypes = {
   UPDATE_PROFILE: 'UPDATE_PROFILE',
@@ -76,6 +86,8 @@ export const weatherSteamReducer = (
     case ActionTypes.CLEAR: {
       return initialState;
     }
+    default:
+      return state;
   }
 };
 
@@ -108,7 +120,19 @@ export const useWeatherSteamActionContext = () => {
 };
 
 export function WeatherSteamContextProvider({ children }: Props) {
-  const [state, dispatch] = useReducer(weatherSteamReducer, initialState);
+  const [state, dispatch] = useReducer(
+    weatherSteamReducer,
+    initialState,
+    (base) => ({
+      profile: readLS('userProfile', base.profile),
+      library: readLS('userLibrary', base.library)
+    })
+  );
+
+  useEffect(() => {
+    localStorage.setItem('userProfile', JSON.stringify(state.profile));
+    localStorage.setItem('userLibrary', JSON.stringify(state.library));
+  }, [state.profile, state.library]);
 
   return (
     <WeatherSteamStateContext.Provider value={state}>
