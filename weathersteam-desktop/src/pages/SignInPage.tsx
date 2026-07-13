@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import SignInComponent from '../components/SignInComponent';
+import SignInComponent from '../components/sign-in/SignInComponent';
 import { useWeatherSteamActionContext } from '../context/WeatherSteamContextProvider';
 import { Navigate } from 'react-router-dom';
 

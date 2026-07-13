@@ -13,11 +13,11 @@ import {
   SteamProfileResponse,
   SteamUserLibrary,
   SteamUserLibraryResponse
-} from '../../common/types';
+} from '../../../common/types';
 import { OverridableStringUnion } from '@mui/types';
-import CustomSnackbar from './CustomSnackbar';
+import CustomSnackbar from '../common/CustomSnackbar';
 import { useNavigate } from 'react-router-dom';
-import { useWeatherSteamActionContext } from '../context/WeatherSteamContextProvider';
+import { useWeatherSteamActionContext } from '../../context/WeatherSteamContextProvider';
 
 export default function SignInComponent() {
   const navigate = useNavigate();
