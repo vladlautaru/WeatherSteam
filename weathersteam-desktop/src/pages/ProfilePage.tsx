@@ -1,3 +1,7 @@
+import { useWeatherSteamStateContext } from '../context/WeatherSteamContextProvider';
+
 export default function ProfilePage() {
-  return <>This is Profile Page</>;
+  const { profile } = useWeatherSteamStateContext();
+
+  return <>Welcome, {profile.personaname}</>;
 }
