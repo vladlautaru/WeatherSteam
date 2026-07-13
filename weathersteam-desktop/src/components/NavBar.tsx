@@ -12,7 +12,7 @@ export enum NavButtonIndex {
 export default function NavBar() {
   const drawerWidth: number = 300;
   const [selectedElement, setSelectedElement] = useState<NavButtonIndex>(
-    NavButtonIndex.LIBRARY_BUTTON_INDEX
+    NavButtonIndex.PROFILE_BUTTON_INDEX
   );
 
   return (
