@@ -1,3 +1,5 @@
+import ProfilePictureContainer from './ProfilePictureContainer';
+
 export default function ProfileComponent() {
-  return <></>;
+  return <ProfilePictureContainer />;
 }
