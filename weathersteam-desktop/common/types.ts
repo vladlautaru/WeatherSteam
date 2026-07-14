@@ -57,6 +57,7 @@ export interface SteamGame {
 export interface LocationResponse {
   status: string;
   country?: string;
+  countryCode?: string;
   regionName?: string;
   city?: string;
   lat?: number;

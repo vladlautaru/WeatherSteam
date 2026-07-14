@@ -12,7 +12,7 @@ async function getPublicIp(): Promise<string> {
 async function getLocation(publicIp: string): Promise<LocationResponse> {
   const ipApiUrl =
     `http://ip-api.com/json/${publicIp}` +
-    `?fields=status,message,country,regionName,city,lat,lon`;
+    `?fields=status,country,countryCode,regionName,city,lat,lon`;
 
   const res = await fetch(ipApiUrl);
   const locationByIpResponse = (await res.json()) as LocationResponse;
