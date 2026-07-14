@@ -1,5 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import { useWeatherSteamStateContext } from '../../context/WeatherSteamContextProvider';
+import CountryFlag from './CountryFlag';
 
 export default function ProfilePictureContainer() {
   const { profile } = useWeatherSteamStateContext();
@@ -38,7 +39,16 @@ export default function ProfilePictureContainer() {
         />
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Typography variant="h4" component="div">
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          {profile.loccountrycode ? (
+            <CountryFlag countryCode={profile.loccountrycode!} />
+          ) : (
+            <></>
+          )}
           {profile.personaname}
         </Typography>
       </Box>

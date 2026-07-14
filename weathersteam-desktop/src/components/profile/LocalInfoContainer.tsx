@@ -2,20 +2,13 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { LocationResponse } from '../../../common/types';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import * as Flags from 'country-flag-icons/react/3x2';
-import { hasFlag } from 'country-flag-icons';
+import CountryFlag from './CountryFlag';
 
 export default function LocalInfoContainer() {
   const [loading, setLoading] = useState<boolean>(false);
   const [currentLocation, setCurrentLocation] = useState<LocationResponse>({
     status: 'fail'
   });
-
-  const CountryFlag = ({ countryCode }: { countryCode: string }) => {
-    if (!hasFlag(countryCode)) return null;
-    const Flag = Flags[countryCode as keyof typeof Flags];
-    return <Flag style={{ width: 20, verticalAlign: 'middle' }} />;
-  };
 
   const fetchLocation = useCallback(async () => {
     setLoading(true);
