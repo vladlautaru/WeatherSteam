@@ -1,40 +1,41 @@
 import { Typography, Skeleton } from '@mui/material';
-import { LocationResponse } from '../../../common/types';
 import CountryFlag from './CountryFlag';
 import LocationPinIcon from '@mui/icons-material/LocationPin';
+import { useWeatherSteamStateContext } from '../../context/WeatherSteamContextProvider';
 
 interface LocationContainerProps {
   loading: boolean;
-  currentLocation: LocationResponse;
 }
 
 export default function LocationContainer(props: LocationContainerProps) {
   if (props.loading) {
     return (
-      <Typography variant="h6">
+      <Typography variant="h5">
         <Skeleton width={400}></Skeleton>
       </Typography>
     );
   } else {
+    const { location } = useWeatherSteamStateContext();
+
     return (
       <>
         <Typography
-          variant="h6"
+          variant="h5"
           component="div"
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <LocationPinIcon />
           Location:{' '}
-          {props.currentLocation.status === 'success' ? (
+          {location.status === 'success' ? (
             <>
-              {props.currentLocation.regionName}
+              {location.regionName}
               {', '}
-              {props.currentLocation.city}
+              {location.city}
               {', '}
-              {props.currentLocation.countryCode && (
-                <CountryFlag countryCode={props.currentLocation.countryCode} />
+              {location.countryCode && (
+                <CountryFlag countryCode={location.countryCode} />
               )}
-              {props.currentLocation.country}
+              {location.country}
             </>
           ) : (
             'unknown'

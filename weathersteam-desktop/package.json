@@ -17,6 +17,7 @@
     "country-flag-icons": "^1.6.20",
     "dotenv": "^17.4.2",
     "kill-port": "^2.0.1",
+    "openmeteo": "^1.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0"

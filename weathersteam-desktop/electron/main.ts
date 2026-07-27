@@ -7,6 +7,8 @@ import steamSignIn from './function/steamSignIn';
 import getSteamProfile from './function/getSteamProfile';
 import getUserLibrary from './function/getUserLibrary';
 import getCurrentLocation from './function/getCurrentLocation';
+import { WeatherRequest } from '../common/types';
+import getLocalWeather from './function/getLocalWeather';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,5 +74,9 @@ app.whenReady().then(() => {
     getUserLibrary(steamId)
   );
   ipcMain.handle(IpcChannel.GET_CURRENT_LOCATION, () => getCurrentLocation());
+  ipcMain.handle(
+    IpcChannel.GET_LOCAL_WEATHER,
+    async (_event, request: WeatherRequest) => getLocalWeather(request)
+  );
   createWindow();
 });
