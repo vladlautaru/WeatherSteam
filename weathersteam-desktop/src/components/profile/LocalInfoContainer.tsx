@@ -1,8 +1,9 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { WeatherRequest } from '../../../common/types';
 import LocationContainer from './LocationContainer';
 import WeatherContainer from './WeatherContainer';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useWeatherSteamActionContext } from '../../context/WeatherSteamContextProvider';
 
 export default function LocalInfoContainer() {
@@ -60,6 +61,15 @@ export default function LocalInfoContainer() {
     >
       <LocationContainer loading={loading} />
       <WeatherContainer loading={loading} />
+      <Button
+        startIcon={<RefreshIcon />}
+        color="secondary"
+        variant="contained"
+        loading={loading}
+        onClick={fetchLocationAndWeather}
+      >
+        Refresh
+      </Button>
     </Box>
   );
 }
