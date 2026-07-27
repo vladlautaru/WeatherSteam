@@ -54,9 +54,39 @@ export interface SteamGame {
   playtime_disconnected: number;
 }
 
+export interface LocationResponse {
+  status: string;
+  country?: string;
+  countryCode?: string;
+  regionName?: string;
+  city?: string;
+  lat?: number;
+  lon?: number;
+}
+
+export interface WeatherRequest {
+  latitude: number;
+  longitude: number;
+  current: string[];
+  wind_speed_unit: 'kmh' | 'mph';
+  temperature_unit: 'celsius' | 'fahrenheit';
+  precipitation_unit: 'mm' | 'inch';
+}
+
+export interface WeatherResponse {
+  temperature_2m: number;
+  is_day: boolean;
+  rain: number;
+  wind_speed_10m: number;
+  snowfall: number;
+  cloud_cover: number;
+}
+
 export interface WeatherSteamAPI {
   steamSignIn: () => Promise<SteamAuthResponse>;
   getSteamProfile: (steamId: string) => Promise<SteamProfileResponse>;
   getUserLibrary: (steamId: string) => Promise<SteamUserLibraryResponse>;
+  getCurrentLocation: () => Promise<LocationResponse>;
+  getLocalWeather: (request: WeatherRequest) => Promise<WeatherResponse>;
   cancelSignIn: () => Promise<void>;
 }

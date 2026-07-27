@@ -32,7 +32,6 @@ export default function PermanentDrawer(props: PermanentDrawerProps) {
   const navigate = useNavigate();
 
   const handleNavButtonClick = (buttonIndex: NavButtonIndex) => {
-
     props.setSelectedElement(buttonIndex);
 
     switch (buttonIndex) {

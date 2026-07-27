@@ -1,24 +1,27 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import { IpcChannel } from "../common/ipcChannels";
-import * as dotenv from "dotenv";
-import steamSignIn from "./function/steamSignIn";
-import getSteamProfile from "./function/getSteamProfile";
-import getUserLibrary from "./function/getUserLibrary";
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { IpcChannel } from '../common/ipcChannels';
+import * as dotenv from 'dotenv';
+import steamSignIn from './function/steamSignIn';
+import getSteamProfile from './function/getSteamProfile';
+import getUserLibrary from './function/getUserLibrary';
+import getCurrentLocation from './function/getCurrentLocation';
+import { WeatherRequest } from '../common/types';
+import getLocalWeather from './function/getLocalWeather';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
-process.env.APP_ROOT = path.join(__dirname, "..");
+process.env.APP_ROOT = path.join(__dirname, '..');
 
-export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
+export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
+export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron');
+export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist');
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
-  ? path.join(process.env.APP_ROOT, "public")
+  ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST;
 
 app.disableHardwareAcceleration();
@@ -29,33 +32,33 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
-    backgroundColor: "#171A21",
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    backgroundColor: '#171A21',
+    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs"),
-    },
+      preload: path.join(__dirname, 'preload.mjs')
+    }
   });
 
-  win.webContents.on("did-finish-load", () => {
-    win?.webContents.send("main-process-message", new Date().toLocaleString());
+  win.webContents.on('did-finish-load', () => {
+    win?.webContents.send('main-process-message', new Date().toLocaleString());
   });
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
-    win.webContents.openDevTools({ mode: "detach" });
+    win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+    win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 }
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
     win = null;
   }
 });
 
-app.on("activate", () => {
+app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
@@ -65,10 +68,15 @@ app.whenReady().then(() => {
   ipcMain.handle(IpcChannel.STEAM_SIGN_IN, () => steamSignIn(win));
   ipcMain.handle(
     IpcChannel.GET_STEAM_PROFILE,
-    async (_event, steamId: string) => getSteamProfile(steamId),
+    async (_event, steamId: string) => getSteamProfile(steamId)
   );
   ipcMain.handle(IpcChannel.GET_USER_LIBRARY, async (_event, steamId: string) =>
-    getUserLibrary(steamId),
+    getUserLibrary(steamId)
+  );
+  ipcMain.handle(IpcChannel.GET_CURRENT_LOCATION, () => getCurrentLocation());
+  ipcMain.handle(
+    IpcChannel.GET_LOCAL_WEATHER,
+    async (_event, request: WeatherRequest) => getLocalWeather(request)
   );
   createWindow();
 });

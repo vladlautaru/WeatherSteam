@@ -1,25 +1,12 @@
 import { Box, Typography } from '@mui/material';
-import SignInComponent from '../components/SignInComponent';
-import { useWeatherSteamActionContext } from '../context/WeatherSteamContextProvider';
+import SignInComponent from '../components/sign-in/SignInComponent';
+import { useWeatherSteamStateContext } from '../context/WeatherSteamContextProvider';
 import { Navigate } from 'react-router-dom';
 
 export default function SignInPage() {
-  // const navigate = useNavigate();
-  const { updateProfileAction, updateLibraryAction } =
-    useWeatherSteamActionContext();
+  const { profile } = useWeatherSteamStateContext();
 
-  const loadedProfile = localStorage.getItem('userProfile');
-  const loadedLibrary = localStorage.getItem('userLibrary');
-
-  if (loadedProfile !== null) {
-    updateProfileAction(JSON.parse(loadedProfile));
-  }
-
-  if (loadedLibrary !== null) {
-    updateLibraryAction(JSON.parse(loadedLibrary));
-  }
-
-  if (loadedProfile !== null) {
+  if (profile !== null) {
     return <Navigate to="/profile" replace />;
   }
 
